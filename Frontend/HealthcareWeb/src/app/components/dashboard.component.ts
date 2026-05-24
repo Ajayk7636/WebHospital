@@ -195,7 +195,7 @@ export class DashboardComponent implements OnInit {
       this.apiService.getPatients().subscribe(data => this.allPatients = data);
     } else if (this.role === 'Patient') {
       this.apiService.getDoctors().subscribe(data => this.doctors = data);
-      this.apiService.getPatientHistory(this.userId).subscribe(data => this.history = data);
+      this.apiService.getPatientHistory().subscribe(data => this.history = data);
     }
 
     this.loadAppointments();
@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit {
   onBook() {
     if (!this.selectedDoctorId || !this.apptDate) return;
     const body = {
-      patientId: this.userId, // Note: In a real system, the API should derive patient ID from UserId
+      patientId: 0, // Backend will use authenticated user's PatientId
       doctorId: Number(this.selectedDoctorId),
       appDate: this.apptDate,
       appTime: "10:00:00"

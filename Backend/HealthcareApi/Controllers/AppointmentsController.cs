@@ -26,17 +26,19 @@ namespace HealthcareApi.Controllers
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var role = User.FindFirstValue(ClaimTypes.Role);
 
-            // Security: Ensure patient can only book for themselves
+            int finalPatientId = dto.PatientId;
+
+            // Security: If user is a patient, ignore the PatientId in DTO and use their actual linked PatientId
             if (role == "Patient")
             {
                 var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-                if (patient == null || patient.Id != dto.PatientId)
-                    return Forbid();
+                if (patient == null) return Forbid();
+                finalPatientId = patient.Id;
             }
 
             var appointment = new Appointment
             {
-                PatientId = dto.PatientId,
+                PatientId = finalPatientId,
                 DoctorId = dto.DoctorId,
                 AppDate = DateTime.Parse(dto.AppDate),
                 AppTime = TimeSpan.Parse(dto.AppTime),
@@ -61,9 +63,17 @@ namespace HealthcareApi.Controllers
                 .AsQueryable();
 
             if (role == "Patient")
-                query = query.Where(a => a.Patient!.UserId == userId);
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+                if (patient == null) return Ok(new List<object>());
+                query = query.Where(a => a.PatientId == patient.Id);
+            }
             else if (role == "Doctor")
-                query = query.Where(a => a.Doctor!.UserId == userId);
+            {
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.UserId == userId);
+                if (doctor == null) return Ok(new List<object>());
+                query = query.Where(a => a.DoctorId == doctor.Id);
+            }
 
             var result = await query.Select(a => new {
                 a.Id,

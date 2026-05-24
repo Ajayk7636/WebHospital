@@ -61,8 +61,8 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/prescriptions`, prescription, this.getHeaders());
   }
 
-  getPatientHistory(patientId: number): Observable<Prescription[]> {
-    return this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions/patient/${patientId}`, this.getHeaders());
+  getPatientHistory(): Observable<Prescription[]> {
+    return this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions/patient/history`, this.getHeaders());
   }
 
   getAdminStats(): Observable<DashboardStats> {

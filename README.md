@@ -64,10 +64,15 @@ This is a complete B.Tech final year project codebase featuring an Angular front
 ---
 
 ## Academic Documentation
-For the full system design, UI/UX, API specifications, and ER diagrams suitable for project report inclusion, please refer to:
-- **`Healthcare_HMS_Full_Design_Report.md` (Primary Comprehensive Design Report)**
-- `final_project_document.md`
-- `system_design.md`
-- `api_design.md`
-- `database_design.md`
-- `workflow_er.md`
+For the full system design, UI/UX, API specifications, and ER diagrams suitable for project report inclusion, please refer to the following comprehensive report:
+
+- **[`Healthcare_HMS_Full_Design_Report.md`](./Healthcare_HMS_Full_Design_Report.md)**
+
+This document serves as the primary technical specification for the project, following a glossy academic style suitable for direct B.Tech final year project submission. It includes:
+- Detailed UI/UX Layouts
+- Role-based Screen Designs (Admin, Doctor, Patient)
+- Appointment and Prescription Workflows
+- System Architecture and Data Flow
+- REST API Contracts
+- MySQL Normalized Database Schema
+- Use Case and ER Diagram Explanations
