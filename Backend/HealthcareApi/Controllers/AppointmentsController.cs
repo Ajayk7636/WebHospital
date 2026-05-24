@@ -98,5 +98,25 @@ namespace HealthcareApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Status updated" });
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelAppointment(int id)
+        {
+            var appt = await _context.Appointments.Include(a => a.Patient).FirstOrDefaultAsync(a => a.Id == id);
+            if (appt == null) return NotFound();
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            // Authorization: Admin or the Patient who owns the appointment
+            if (role == "Patient" && appt.Patient?.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            appt.Status = "Cancelled";
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Appointment cancelled successfully" });
+        }
     }
 }

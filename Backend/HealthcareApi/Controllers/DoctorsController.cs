@@ -69,5 +69,45 @@ namespace HealthcareApi.Controllers
 
             return Ok(new { id = doctor.Id, message = "Doctor added successfully" });
         }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateDoctor(int id, DoctorUpdateDto dto)
+        {
+            var doctor = await _context.Doctors.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == id);
+            if (doctor == null) return NotFound();
+
+            doctor.Specialization = dto.Specialization;
+            doctor.Qualification = dto.Qualification;
+            doctor.Experience = dto.Experience;
+            doctor.DeptId = dto.DeptId;
+
+            if (doctor.User != null)
+            {
+                doctor.User.FirstName = dto.FirstName;
+                doctor.User.LastName = dto.LastName;
+                doctor.User.Phone = dto.Phone;
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Doctor updated successfully" });
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteDoctor(int id)
+        {
+            var doctor = await _context.Doctors.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == id);
+            if (doctor == null) return NotFound();
+
+            if (doctor.User != null)
+            {
+                _context.Users.Remove(doctor.User);
+            }
+            _context.Doctors.Remove(doctor);
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
