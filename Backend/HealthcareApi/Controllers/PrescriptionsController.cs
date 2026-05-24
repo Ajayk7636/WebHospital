@@ -4,6 +4,7 @@ using HealthcareApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HealthcareApi.Controllers
 {
@@ -53,13 +54,21 @@ namespace HealthcareApi.Controllers
             return Ok(p);
         }
 
-        [HttpGet("patient/{patientId}")]
-        public async Task<IActionResult> GetByPatient(int patientId)
+        [HttpGet("patient/history")]
+        public async Task<IActionResult> GetPatientHistory()
         {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (role != "Patient") return Forbid();
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null) return NotFound();
+
             var history = await _context.Prescriptions
                 .Include(p => p.Appointment)
                 .ThenInclude(a => a!.Doctor!.User)
-                .Where(p => p.Appointment!.PatientId == patientId)
+                .Where(p => p.Appointment!.PatientId == patient.Id)
                 .Select(p => new {
                     p.Id,
                     p.CreatedAt,

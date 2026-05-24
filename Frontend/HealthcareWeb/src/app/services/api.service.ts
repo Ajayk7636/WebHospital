@@ -32,12 +32,20 @@ export class ApiService {
     return this.http.get<Doctor[]>(`${this.apiUrl}/doctors`, this.getHeaders());
   }
 
+  addDoctor(doctor: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/doctors`, doctor, this.getHeaders());
+  }
+
+  getPatients(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/patients`, this.getHeaders());
+  }
+
   bookAppointment(appointment: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/appointments`, appointment, this.getHeaders());
   }
 
-  getAppointments(userId: number, role: string): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments?userId=${userId}&role=${role}`, this.getHeaders());
+  getAppointments(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.apiUrl}/appointments`, this.getHeaders());
   }
 
   updateAppointmentStatus(id: number, status: string): Observable<any> {
@@ -53,8 +61,8 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/prescriptions`, prescription, this.getHeaders());
   }
 
-  getPatientHistory(patientId: number): Observable<Prescription[]> {
-    return this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions/patient/${patientId}`, this.getHeaders());
+  getPatientHistory(): Observable<Prescription[]> {
+    return this.http.get<Prescription[]>(`${this.apiUrl}/prescriptions/patient/history`, this.getHeaders());
   }
 
   getAdminStats(): Observable<DashboardStats> {
