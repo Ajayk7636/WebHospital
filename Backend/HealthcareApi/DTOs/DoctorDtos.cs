@@ -11,4 +11,15 @@ namespace HealthcareApi.DTOs
         public string? Qualification { get; set; }
         public int Experience { get; set; }
     }
+
+    public class DoctorUpdateDto
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Phone { get; set; }
+        public int DeptId { get; set; }
+        public string Specialization { get; set; } = string.Empty;
+        public string? Qualification { get; set; }
+        public int Experience { get; set; }
+    }
 }
