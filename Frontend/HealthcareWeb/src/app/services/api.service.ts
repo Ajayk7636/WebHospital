@@ -36,8 +36,28 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/doctors`, doctor, this.getHeaders());
   }
 
+  updateDoctor(id: number, doctor: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/doctors/${id}`, doctor, this.getHeaders());
+  }
+
+  deleteDoctor(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/doctors/${id}`, this.getHeaders());
+  }
+
   getPatients(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/patients`, this.getHeaders());
+  }
+
+  addPatient(patient: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/patients`, patient, this.getHeaders());
+  }
+
+  updatePatient(id: number, patient: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/patients/${id}`, patient, this.getHeaders());
+  }
+
+  deletePatient(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/patients/${id}`, this.getHeaders());
   }
 
   bookAppointment(appointment: any): Observable<any> {
@@ -55,6 +75,10 @@ export class ApiService {
         'Content-Type': 'application/json'
       })
     });
+  }
+
+  cancelAppointment(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/appointments/${id}`, this.getHeaders());
   }
 
   addPrescription(prescription: any): Observable<any> {
