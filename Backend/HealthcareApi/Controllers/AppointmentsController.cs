@@ -4,6 +4,7 @@ using HealthcareApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HealthcareApi.Controllers
 {
@@ -22,6 +23,17 @@ namespace HealthcareApi.Controllers
         [HttpPost]
         public async Task<IActionResult> BookAppointment(AppointmentCreateDto dto)
         {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            // Security: Ensure patient can only book for themselves
+            if (role == "Patient")
+            {
+                var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+                if (patient == null || patient.Id != dto.PatientId)
+                    return Forbid();
+            }
+
             var appointment = new Appointment
             {
                 PatientId = dto.PatientId,
@@ -38,17 +50,20 @@ namespace HealthcareApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAppointments(int? userId, string? role)
+        public async Task<IActionResult> GetAppointments()
         {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
             var query = _context.Appointments
                 .Include(a => a.Patient!.User)
                 .Include(a => a.Doctor!.User)
                 .AsQueryable();
 
-            if (role == "Patient" && userId.HasValue)
-                query = query.Where(a => a.Patient!.UserId == userId.Value);
-            else if (role == "Doctor" && userId.HasValue)
-                query = query.Where(a => a.Doctor!.UserId == userId.Value);
+            if (role == "Patient")
+                query = query.Where(a => a.Patient!.UserId == userId);
+            else if (role == "Doctor")
+                query = query.Where(a => a.Doctor!.UserId == userId);
 
             var result = await query.Select(a => new {
                 a.Id,

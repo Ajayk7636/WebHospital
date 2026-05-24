@@ -50,6 +50,8 @@ This is a complete B.Tech final year project codebase featuring an Angular front
    ```
 4. Open your browser at `http://localhost:4200`.
 
+*Note: The frontend is configured to communicate with the backend on `http://localhost:5000`.*
+
 ---
 
 ## Core Features
@@ -62,7 +64,8 @@ This is a complete B.Tech final year project codebase featuring an Angular front
 ---
 
 ## Academic Documentation
-For the full system design, API specifications, and ER diagrams suitable for project report inclusion, please refer to:
+For the full system design, UI/UX, API specifications, and ER diagrams suitable for project report inclusion, please refer to:
+- **`Healthcare_HMS_Full_Design_Report.md` (Primary Comprehensive Design Report)**
 - `final_project_document.md`
 - `system_design.md`
 - `api_design.md`
